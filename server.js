@@ -4,6 +4,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
+// Load environment variables from .env immediately
+dotenv.config();
 const connectDb = require('./db/database');
 const cors = require('cors');
 

@@ -4,10 +4,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-// Load environment variables from .env immediately
 dotenv.config();
 const connectDb = require('./db/database');
 const cors = require('cors');
+const passport = require('passport');
+const session = require('express-session');
+const GitHubStrategy = require('passport-github2').Strategy;
 
 /* ********************
  * App Config
@@ -21,6 +23,24 @@ const port = process.env.PORT || 3000;
 app
   // Parse incoming JSON requests
   .use(bodyParser.json())
+
+    // Session middleware (for login)
+  .use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
+  }
+  }))
+  
+  // Initialize Passport for authentication
+  .use(passport.initialize())
+
+  // Allow passport to use express-session
+  .use(passport.session())
 
   //Set global headers
   .use((req, res, next) => {
@@ -46,6 +66,48 @@ app
  * Router
  * *******************/
 app.use('/', require('./routes'));
+
+/* *************************
+ * Passport GitHub Strategy
+ * *************************/
+// GitHub OAuth login
+passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: process.env.GITHUB_CALLBACK_URL
+  },
+    function (accessToken, refreshToken, profile, done) {
+      // User.findOrCreate({ githubId: profile.id }, function (err, user) {
+      return done(null, profile);
+      // });
+    }
+  ));
+
+// Save user data to session
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+// Get user data from session
+passport.deserializeUser((obj, done) => {
+  done(null, obj);
+});
+
+/* *************************
+ * Routes
+ * *************************/
+// Home route
+app.get('/', (req, res) => {
+  res.send(req.session.user !== undefined ? `logged in as ${req.session.user.displayName}` : "Logged Out")
+});
+
+// OAuth callback route
+app.get('/github/callback',
+  passport.authenticate('github', { failureRedirect: '/api-docs' }),
+  (req, res) => {
+    req.session.user = req.user;
+    res.redirect('/');
+  });
 
 /* *************************
  * Start server

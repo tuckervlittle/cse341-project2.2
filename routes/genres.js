@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const genreController = require('../controllers/genreController');
 
+const genreController = require('../controllers/genreController');
+const { isAuthenticated } = require('../middleware/authenticate');
 
 
 /* *****************
@@ -37,6 +38,7 @@ router.get('/:id',
 router.post('/',
   // #swagger.tags = ['Genres']
   // #swagger.description = 'Create a new genre (protected)'
+  // #swagger.security = [{ "cookieAuth": [] }]
   /* #swagger.parameters['newGenre'] = {
       in: 'body',
       description: 'Genre to create',
@@ -47,12 +49,14 @@ router.post('/',
       description: 'Genre created',
       schema: { $ref: '#/definitions/Genre' }
   } */
+  isAuthenticated,
   genreController.createGenre);
 
 // PUT /genres/{id}
 router.put('/:id',
   // #swagger.tags = ['Genres']
   // #swagger.description = 'Update a genre by id (protected)'
+  // #swagger.security = [{ "cookieAuth": [] }]'
   // #swagger.parameters['id'] = { description: 'Genre ID', required: true }
   /* #swagger.parameters['genre'] = {
       in: 'body',
@@ -60,13 +64,16 @@ router.put('/:id',
       required: true,
       schema: { $ref: '#/definitions/UpdatedGenre' }
   } */
+  isAuthenticated,
   genreController.updateGenre);
 
 // DELETE /genres/{id}
 router.delete('/:id',
   // #swagger.tags = ['Genres']
   // #swagger.description = 'Delete genre by id (protected)'
+  // #swagger.security = [{ "cookieAuth": [] }]'
   // #swagger.parameters['id'] = { description: 'Genre ID', required: true }
+  isAuthenticated,
   genreController.deleteGenre);
 
 module.exports = router;

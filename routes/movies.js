@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const movieController = require('../controllers/movieController');
-// const { isAuthenticated } = require('../middleware/authenticate');
+const { isAuthenticated } = require('../middleware/authenticate');
 
 
 /* *****************
@@ -39,6 +39,7 @@ router.get('/:id',
 router.post('/',
   // #swagger.tags = ['Movies']
   // #swagger.description = 'Create a new movie (protected)'
+  // #swagger.security = [{ "cookieAuth": [] }]'
   /* #swagger.parameters['newMovie'] = {
       in: 'body',
       description: 'New movie object',
@@ -49,12 +50,14 @@ router.post('/',
       description: 'Movie created',
       schema: { $ref: '#/definitions/Movie' }
   } */
+  isAuthenticated,
   movieController.createMovie);
 
 // PUT /movies/{id}
 router.put('/:id',
   // #swagger.tags = ['Movies']
   // #swagger.description = 'Update movie by id (protected)'
+  // #swagger.security = [{ "cookieAuth": [] }]'
   // #swagger.parameters['id'] = { description: 'Movie ID', required: true }
   /* #swagger.parameters['movie'] = {
       in: 'body',
@@ -62,13 +65,16 @@ router.put('/:id',
       required: true,
       schema: { $ref: '#/definitions/UpdatedMovie' }
   } */
+  isAuthenticated,
   movieController.updateMovie);
 
 // DELETE /movies/{id}
 router.delete('/:id',
   // #swagger.tags = ['Movies']
   // #swagger.description = 'Delete movie by id (protected)'
+  // #swagger.security = [{ "cookieAuth": [] }]'
   // #swagger.parameters['id'] = { description: 'Movie ID', required: true }
+  isAuthenticated,
   movieController.deleteMovie);
 
 module.exports = router;

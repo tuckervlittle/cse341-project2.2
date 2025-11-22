@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const movieController = require('../controllers/movieController');
-const { isAuthenticated } = require('../middleware/authenticate');
+// const { isAuthenticated } = require('../middleware/authenticate');
 
 
 /* *****************

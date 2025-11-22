@@ -1,0 +1,409 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Movie Watchlist API",
+    "description": "A simple API to manage a movie watchlist and genres",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/api-docs": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/movies/": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "description": "Get all movies.",
+        "responses": {
+          "200": {
+            "description": "List of movies",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Movie"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Movies"
+        ],
+        "description": "Create a new movie (protected)",
+        "parameters": [
+          {
+            "name": "newMovie",
+            "in": "body",
+            "description": "New movie object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Movie"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Movie created",
+            "schema": {
+              "$ref": "#/definitions/Movie"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/movies/{id}": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "description": "Get movie by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Movie ID (ObjectId)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A movie object",
+            "schema": {
+              "$ref": "#/definitions/UpdatedMovie"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Movies"
+        ],
+        "description": "Update movie by id (protected)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Movie ID"
+          },
+          {
+            "name": "movie",
+            "in": "body",
+            "description": "Fields to update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdatedMovie"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Movies"
+        ],
+        "description": "Delete movie by id (protected)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Movie ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/genres/": {
+      "get": {
+        "tags": [
+          "Genres"
+        ],
+        "description": "Get all genres",
+        "responses": {
+          "200": {
+            "description": "List of genres",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UpdatedGenre"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Genres"
+        ],
+        "description": "Create a new genre (protected)",
+        "parameters": [
+          {
+            "name": "newGenre",
+            "in": "body",
+            "description": "Genre to create",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Genre"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Genre created",
+            "schema": {
+              "$ref": "#/definitions/Genre"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/genres/{id}": {
+      "get": {
+        "tags": [
+          "Genres"
+        ],
+        "description": "Get genre by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Genre ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A Genre object",
+            "schema": {
+              "$ref": "#/definitions/UpdatedGenre"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Genres"
+        ],
+        "description": "Update a genre by id (protected)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Genre ID"
+          },
+          {
+            "name": "genre",
+            "in": "body",
+            "description": "Fields to update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdatedGenre"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Genres"
+        ],
+        "description": "Delete genre by id (protected)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Genre ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Movie": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Interstellar"
+        },
+        "director": {
+          "type": "string",
+          "example": "Chris Columbus"
+        },
+        "releaseYear": {
+          "type": "number",
+          "example": 2015
+        },
+        "runTime": {
+          "type": "number",
+          "example": 169
+        },
+        "genre": {
+          "type": "string",
+          "example": "68dabda1046c79066df0eee7"
+        },
+        "description": {
+          "type": "string",
+          "example": "In Earth's future, a global crop blight and second Dust Bowl are slowly rendering the planet uninhabitable. Professor Brand (Michael Caine), a brilliant NASA physicist, is working on plans to save mankind by transporting Earth's population to a new home via a wormhole. But first, Brand must send former NASA pilot Cooper (Matthew McConaughey) and a team of researchers through the wormhole and across the galaxy to find out which of three planets could be mankind's new home."
+        },
+        "watched": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "Genre": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Romance"
+        },
+        "description": {
+          "type": "string",
+          "example": "Fun science fiction movies"
+        }
+      }
+    },
+    "UpdatedMovie": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Interstellar"
+        },
+        "director": {
+          "type": "string",
+          "example": "Christopher Nolan"
+        },
+        "releaseYear": {
+          "type": "number",
+          "example": 2014
+        },
+        "runTime": {
+          "type": "number",
+          "example": 169
+        },
+        "genre": {
+          "type": "string",
+          "example": "68dabda1046c79066df0eee6"
+        },
+        "description": {
+          "type": "string",
+          "example": "In Earth's future, a global crop blight and second Dust Bowl are slowly rendering the planet uninhabitable. Professor Brand (Michael Caine), a brilliant NASA physicist, is working on plans to save mankind by transporting Earth's population to a new home via a wormhole. But first, Brand must send former NASA pilot Cooper (Matthew McConaughey) and a team of researchers through the wormhole and across the galaxy to find out which of three planets could be mankind's new home."
+        },
+        "watched": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "UpdatedGenre": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Romance"
+        },
+        "description": {
+          "type": "string",
+          "example": ""
+        }
+      }
+    }
+  }
+}

@@ -40,25 +40,11 @@ app
 
   // Allow passport to use express-session
   .use(passport.session())
-  
-  // Set global headers
-  .use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-  );
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PUT, DELETE, OPTIONS',
-  );
-  next();
-  })
-  // Allow CORS for HTTP methods
+  // Allow CORS for HTTP methods and allow credentials
   .use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
-    origin: '*'
+    origin: true
   }))
 
   // For main router

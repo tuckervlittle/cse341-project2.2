@@ -62,11 +62,6 @@ app
     origin: '*'
   }));
 
-/* ********************
- * Router
- * *******************/
-app.use('/', require('./routes'));
-
 /* *************************
  * Passport GitHub Strategy
  * *************************/
@@ -77,11 +72,18 @@ passport.use(new GitHubStrategy({
     callbackURL: process.env.GITHUB_CALLBACK_URL
   },
     function (accessToken, refreshToken, profile, done) {
-      // User.findOrCreate({ githubId: profile.id }, function (err, user) {
       return done(null, profile);
-      // });
     }
-  ));
+));
+
+/* ********************
+ * Router
+ * *******************/
+app.use('/', require('./routes'));
+
+/* *************************
+ * Passport GitHub Strategy
+ * *************************/
 
 // Save user data to session
 passport.serializeUser((user, done) => {

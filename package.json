@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/tuckervlittle/cse341-project2.2#readme",
   "dependencies": {
-    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",

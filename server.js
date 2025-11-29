@@ -2,13 +2,12 @@
  * Require Statements
  * *************************/
 const express = require('express');
-const bodyParser = require('body-parser');
-const dotenv = require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config();
 const connectDb = require('./db/database');
 const cors = require('cors');
-const passport = require('passport');
+const passport = require('./middleware/passport');
 const session = require('express-session');
-const GitHubStrategy = require('passport-github2').Strategy;
 
 /* *************************
  * App Config
@@ -21,18 +20,17 @@ const port = process.env.PORT || 3000;
  * *************************/
 app
   // Parse incoming JSON requests
-  .use(bodyParser.json())
+  .use(express.json())
+  .use(express.urlencoded({extended: true}))
+
+  // Allow CORS for HTTP methods and allow credentials
+  .use(cors())
 
   // Session middleware (for login)
   .use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
-    cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax'
-  }
+    saveUninitialized: true,
   }))
 
   // Initialize Passport for authentication
@@ -40,45 +38,14 @@ app
 
   // Allow passport to use express-session
   .use(passport.session())
-  // Allow CORS for HTTP methods and allow credentials
-  .use(cors({
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true,
-    origin: true
-  }))
 
-  // For main router
-  .use('/', require('./routes'));
 
-/* *************************
- * Passport GitHub Strategy
- * *************************/
-// GitHub OAuth login
-passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: process.env.GITHUB_CALLBACK_URL
-  },
-    function (accessToken, refreshToken, profile, done) {
-      // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-      return done(null, profile);
-      // });
-    }
-  ));
+  /* *************************
+  * Routes
+  * *************************/
+// For main router
+.use('/', require('./routes'));
 
-// Save user data to session
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-// Get user data from session
-passport.deserializeUser((obj, done) => {
-  done(null, obj);
-});
-
-/* *************************
- * Routes
- * *************************/
 // Home route
 app.get('/', (req, res) => {
   res.send(req.session.user !== undefined ? `logged in as ${req.session.user.displayName}` : "Logged Out")
@@ -86,7 +53,10 @@ app.get('/', (req, res) => {
 
 // OAuth callback route
 app.get('/github/callback',
-  passport.authenticate('github', { failureRedirect: '/api-docs' }),
+  passport.authenticate('github', {
+    failureRedirect: '/api-docs',
+    session: false,
+  }),
   (req, res) => {
     req.session.user = req.user;
     res.redirect('/');
